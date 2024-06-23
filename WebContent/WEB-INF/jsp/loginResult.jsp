@@ -13,18 +13,20 @@
 <head>
 <meta charset="UTF-8">
 <title>レビューズジェム掲示板</title>
+<link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
 <body>
 
-<h1>レビューズジェム掲示板ログイン</h1>
-<% if(loginUser != null) { %>
- <p>ログインに成功しました</p>
- <p>ようこそ<%= loginUser.getName() %> さん</p>
- <a href="Main">つぶやき投稿・閲覧へ</a>
-<% } else { %>
- <p>ログインに失敗しました</p>
- <a href="index.jsp">TOPへ</a>
-<% } %>
+<div class="container">
+  <% if(loginUser != null) { %>
+    <p class="success-msg">レビューズジェム掲示板ログインに成功しました</p>
+    <p>ようこそ<%= loginUser.getName() %> さん</p>
+    <a href="Main" class="link">つぶやき投稿・閲覧へ</a>
+  <% } else { %>
+    <p class="error-msg">ログインに失敗しました</p>
+    <a href="index.jsp" class="link">TOPへ</a>
+  <% } %>
+</div>
 
 <jsp:include page="footer.jsp" />
 

@@ -3,17 +3,21 @@
 <%@ page import="model.User, model.Mutter, java.util.List" %>
 
 <%
+    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    sdf.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Tokyo"));
+%>
+
+<%
 // セッションスコープに保存されたユーザー情報を取得
 User loginUser = (User)session.getAttribute("loginUser");
 // リクエストスコープに保存されたつぶやきリストを取得
 List<Mutter> mutterList = (List<Mutter>)request.getAttribute("mutterList");
 // リクエストスコープに保存されたエラーメッセージを取得
 String errorMsg = (String)request.getAttribute("errorMsg");
-
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <title>レビューズジェム掲示板</title>
@@ -30,7 +34,8 @@ String errorMsg = (String)request.getAttribute("errorMsg");
   </p>
 
   <form action="Main" method="post" class="form-box">
-    <textarea name="text" rows="4" required></textarea>
+    <textarea id="postContent" name="text" rows="4" maxlength="200" required></textarea>
+    <div id="charCount" class="char-count">0/200</div>
     <input type="submit" value="投稿" class="btn submit-btn">
   </form>
 
@@ -43,9 +48,10 @@ String errorMsg = (String)request.getAttribute("errorMsg");
   <%-- for文 --%>
   <div class="mutter-list">
   <% for (int i = 0; i < mutterList.size(); i++) { %>
-    <div class="mutter-item">
-      <p><%= mutterList.get(i).getUserName() %> : 投稿日時: <%= mutterList.get(i).getPostDate() %><br>
-         <%= mutterList.get(i).getText() %></p>
+<div class="mutter-item">
+  <span class="mutter-dete">投稿日時：<%= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(mutterList.get(i).getPostDate()) %></span>
+  <span class="mutter-user">　<%= mutterList.get(i).getUserName() %></span>
+  <p class="mutter-text"><%= mutterList.get(i).getText() %></p>
 
       <%-- ログインユーザーとユーザー名（ユニークカラム）が一致するつぶやきにだけ削除ボタンが表示される --%>
       <% if(mutterList.get(i).getUserName().equals(loginUser.getName())) { %>
@@ -64,11 +70,19 @@ String errorMsg = (String)request.getAttribute("errorMsg");
   <a href="Main_s" class="link">過去ログへ</a>
 </div>
 
-<%-- 削除の時用のスクリプト文 --%>
 <script>
+
+document.getElementById('postContent').addEventListener('input', function() {
+    var charCount = this.value.length;
+    var charCountElem = document.getElementById('charCount');
+    charCountElem.textContent = charCount + "/200";
+    charCountElem.style.color = charCount > 180 ? 'red' : '#333';
+});
+
 function confirmDelete() {
     return confirm("本当にこのつぶやきを削除しますか？");
 }
+
 </script>
 
 <%-- 共通フッター --%>

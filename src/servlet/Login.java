@@ -24,26 +24,23 @@ public class Login extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		String name = request.getParameter("name");
 		String pass = request.getParameter("pass");
-		
+
 		// DAOのインスタンスを作り
 		UsersDAO loginUser = new UsersDAO();
 		// boolean型変数にメソッドの結果を格納
 		boolean isValidUser = loginUser.isUserValid(name, pass);
-		
+
 		User user = new User(name,pass);
 
 		if(isValidUser == true){
 		   // true だった場合のみセッションスコープに保存
 	        HttpSession session = request.getSession();
-           session.setAttribute("loginUser", user);		
-	    	} 
-		
+           session.setAttribute("loginUser", user);
+	    	}
+
 		// フォワード先は同じ 向こうでの処理はセッションスコープに保存されているかで変わる
 		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/loginResult.jsp");
 		dispatcher.forward(request, response);
-			
-
-
 
 	}
 }

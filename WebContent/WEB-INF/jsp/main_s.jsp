@@ -13,7 +13,7 @@ String errorMsg = (String)request.getAttribute("errorMsg");
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <title>レビューズジェム掲示板</title>
@@ -34,9 +34,10 @@ String errorMsg = (String)request.getAttribute("errorMsg");
   <div class="mutter-list">
   <%-- for文 --%>
   <% for (int i = 0; i < mutterList_s.size(); i++) { %>
-    <div class="mutter-item">
-      <p><%= mutterList_s.get(i).getUserName() %> : 投稿日時: <%= mutterList_s.get(i).getPostDate() %><br>
-         <%= mutterList_s.get(i).getText() %></p>
+<div class="mutter-item">
+  <span class="mutter-dete">投稿日時：<%= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(mutterList_s.get(i).getPostDate()) %></span>
+  <span class="mutter-user">　<%= mutterList_s.get(i).getUserName() %></span>
+  <p class="mutter-text"><%= mutterList_s.get(i).getText() %></p>
 
       <%-- ログインユーザーとユーザー名（ユニークカラム）が一致するつぶやきにだけ削除ボタンが表示される --%>
       <% if(mutterList_s.get(i).getUserName().equals(loginUser.getName())) { %>

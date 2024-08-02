@@ -64,6 +64,25 @@ public class MuttersDAO {
 	} // findAll
 
 
+    public int countAll() {
+        int total = 0;
+        try  {
+			Class.forName(DRIVER_NAME);
+			connection = DriverManager.getConnection(url);
+
+            String sql = "SELECT COUNT(*) AS total FROM mutters";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
 
 	public boolean create(Mutter mutter) {
 

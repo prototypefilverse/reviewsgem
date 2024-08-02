@@ -3,8 +3,8 @@
 <%@ page import="model.User, model.Mutter, java.util.List" %>
 
 <%
-    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    sdf.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Tokyo"));
+java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+sdf.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Tokyo"));
 
 // セッションスコープに保存されたユーザー情報を取得
 User loginUser = (User)session.getAttribute("loginUser");
@@ -14,6 +14,7 @@ List<Mutter> mutterList = (List<Mutter>)request.getAttribute("mutterList");
 String errorMsg = (String)request.getAttribute("errorMsg");
 
 int currentPage = (int) request.getAttribute("currentPage");
+int totalPages = (int) request.getAttribute("totalPages"); // 総ページ数を取得
 %>
 
 <!DOCTYPE html>
@@ -67,11 +68,15 @@ int currentPage = (int) request.getAttribute("currentPage");
   </div>
   <br>
     <div class="pagination">
-     <h3>ページ <%= currentPage %></h3>
     <% if (currentPage > 1) { %>
       <a href="Main?pageNumber=<%= currentPage - 1 %>" class="link">前へ</a>
     <% } %>
-    <% if (mutterList.size() == 10) { %>
+
+    <% for (int i = 1; i <= totalPages; i++) { %>
+      <a href="Main?pageNumber=<%= i %>" class="link <%= (i == currentPage) ? "active" : "" %>"><%= i %></a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
       <a href="Main?pageNumber=<%= currentPage + 1 %>" class="link">次へ</a>
     <% } %>
   </div>

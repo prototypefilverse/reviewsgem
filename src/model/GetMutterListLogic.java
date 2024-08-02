@@ -12,4 +12,9 @@ public class GetMutterListLogic {
         return dao.findAll(offset, pageSize);
     }
 
+    public int getTotalMutters() {
+        MuttersDAO dao = new MuttersDAO();
+        return dao.countAll();
+    }
+
 }

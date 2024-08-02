@@ -44,8 +44,12 @@ public class Main extends HttpServlet {
 		// つぶやきリストを取得して、リクエストスコープに保存
 		GetMutterListLogic getMutterListLogic = new GetMutterListLogic();
 		List<Mutter> mutterList = getMutterListLogic.execute(pageNumber, pageSize);
-		request.setAttribute("mutterList", mutterList );
-		request.setAttribute("currentPage", pageNumber);
+        int totalMutters = getMutterListLogic.getTotalMutters(); // 総つぶやき数を取得
+        int totalPages = (int) Math.ceil((double) totalMutters / pageSize);
+
+        request.setAttribute("mutterList", mutterList);
+        request.setAttribute("currentPage", pageNumber);
+        request.setAttribute("totalPages", totalPages);
 
 		// ログインしているか確認するため
 		// セッションスコープからユーザー情報を取得

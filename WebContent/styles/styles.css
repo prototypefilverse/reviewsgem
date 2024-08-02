@@ -147,6 +147,32 @@ textarea {
     margin-bottom: 20px;
 }
 
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #337ab7;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.pagination a.active {
+    background-color: #337ab7;
+    color: white;
+}
+
+.pagination a:hover {
+    background-color: #ddd;
+    text-decoration: underline;
+}
+
+
 /* Responsive Design */
 @media (max-width: 600px) {
     .container {

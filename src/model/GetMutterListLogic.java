@@ -5,17 +5,11 @@ import java.util.List;
 import dao.MuttersDAO;
 
 public class GetMutterListLogic {
-	
-	public List<Mutter> execute(){
-		MuttersDAO dao = new MuttersDAO();
-		List<Mutter> mutterList = dao.findAll();
-		return mutterList;
-	}
-	
-	public List<Mutter> execute_s(){
-		MuttersDAO dao = new MuttersDAO();
-		List<Mutter> mutterList = dao.findAll_s();
-		return mutterList;
-	}
+
+    public List<Mutter> execute(int pageNumber, int pageSize) {
+        MuttersDAO dao = new MuttersDAO();
+        int offset = (pageNumber - 1) * pageSize;
+        return dao.findAll(offset, pageSize);
+    }
 
 }

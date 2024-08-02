@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import model.Mutter;
@@ -20,7 +19,7 @@ public class MuttersDAO {
 	// データベースの接続文字列
 	private final String url = "jdbc:sqlserver://reviewsgembb.database.windows.net:1433;database=reviewsgembb;user=morikawasusumu@reviewsgembb;password=00830080gG;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
 
-	public List<Mutter> findAll() {
+	public List<Mutter> findAll(int offset, int limit) {
 
 		// returnするリストを用意
 		List<Mutter> mutterList = new ArrayList<>();
@@ -33,10 +32,12 @@ public class MuttersDAO {
 
 			// String型変数にクエリ(問い合わせ)を用意
 			// String sql = "SELECT id, name, text, post_date FROM mutters ORDER BY ID DESC limit 10";
-			String sql = "SELECT TOP 10 id, name, text, post_date FROM mutters ORDER BY ID DESC";
+			String sql = "SELECT * FROM mutters ORDER BY post_date DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
 			// SQLをDBに届けるPreparedStatementインスタンスを取得
 			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setInt(1, offset);
+			ps.setInt(2, limit);
 
             // SELECTが実行され、ResultSetインスタンスに結果が格納される
 			ResultSet rs = ps.executeQuery();
@@ -48,75 +49,21 @@ public class MuttersDAO {
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
 				String text = rs.getString("text");
-				Date postDate = rs.getTimestamp("post_date"); // getTimestamp()で投稿日時を取得（投稿時に自動で生成されている）
+				java.util.Date postDate = rs.getTimestamp("post_date"); // getTimestamp()で投稿日時を取得（投稿時に自動で生成されている）
 				// 取り出した値をコンストラクタに入れインスタンス生成
 				Mutter mutter = new Mutter(id, name, text, postDate);
 				// リストに格納
 				mutterList.add(mutter);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		} // try
-
-		return mutterList;
+		  } catch (Exception e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+	        return mutterList;
 
 	} // findAll
 
-	public List<Mutter> findAll_s() {
 
-		// returnするリストを用意
-		List<Mutter> mutterList = new ArrayList<>();
-
-		try {
-			Class.forName(DRIVER_NAME);
-			connection = DriverManager.getConnection(url);
-
-			// String型変数にクエリ(問い合わせ)を用意 IDでDESC順
-			// String sql = "SELECT id, name, text, post_date FROM mutters ORDER BY ID DESC limit 100 offset 10";
-			String sql = "SELECT id, name, text, post_date FROM mutters ORDER BY id DESC OFFSET 10 ROWS FETCH NEXT 100 ROWS ONLY";
-
-
-			PreparedStatement ps = connection.prepareStatement(sql);
-
-			ResultSet rs = ps.executeQuery();
-
-			// rs.next()取得結果が存在するかどうかを表すbool値)で条件分岐や繰り返しを行い、ResultSetから情報を引き出す
-			while (rs.next()) {
-
-				int id = rs.getInt("id");
-				String name = rs.getString("name");
-				String text = rs.getString("text");
-				Date postDate = rs.getTimestamp("post_date"); // getTimestamp()で投稿日時を取得（投稿時に自動で生成されている）
-				Mutter mutter = new Mutter(id, name, text, postDate);
-				mutterList.add(mutter);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		} // try
-
-		return mutterList;
-
-	} // findAll_s
 
 	public boolean create(Mutter mutter) {
 

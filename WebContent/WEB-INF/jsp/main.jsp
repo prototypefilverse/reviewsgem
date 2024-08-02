@@ -5,15 +5,15 @@
 <%
     java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     sdf.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Tokyo"));
-%>
 
-<%
 // セッションスコープに保存されたユーザー情報を取得
 User loginUser = (User)session.getAttribute("loginUser");
 // リクエストスコープに保存されたつぶやきリストを取得
 List<Mutter> mutterList = (List<Mutter>)request.getAttribute("mutterList");
 // リクエストスコープに保存されたエラーメッセージを取得
 String errorMsg = (String)request.getAttribute("errorMsg");
+
+int currentPage = (int) request.getAttribute("currentPage");
 %>
 
 <!DOCTYPE html>
@@ -43,13 +43,12 @@ String errorMsg = (String)request.getAttribute("errorMsg");
     <p class="error-msg"><%= errorMsg %></p>
   <% } %>
 
-  <h3>最新10件まで表示中</h3>
   <a href="Main" class="link">更新</a>
   <%-- for文 --%>
   <div class="mutter-list">
   <% for (int i = 0; i < mutterList.size(); i++) { %>
 <div class="mutter-item">
-  <span class="mutter-dete">投稿日時：<%= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(mutterList.get(i).getPostDate()) %></span>
+  <span class="mutter-dete">投稿日時：<%= sdf.format(mutterList.get(i).getPostDate()) %></span>
   <span class="mutter-user">　<%= mutterList.get(i).getUserName() %></span>
   <p class="mutter-text"><%= mutterList.get(i).getText() %></p>
 
@@ -67,7 +66,15 @@ String errorMsg = (String)request.getAttribute("errorMsg");
   <% } %>
   </div>
   <br>
-  <a href="Main_s" class="link">過去ログへ</a>
+    <div class="pagination">
+     <h3>ページ <%= currentPage %></h3>
+    <% if (currentPage > 1) { %>
+      <a href="Main?pageNumber=<%= currentPage - 1 %>" class="link">前へ</a>
+    <% } %>
+    <% if (mutterList.size() == 10) { %>
+      <a href="Main?pageNumber=<%= currentPage + 1 %>" class="link">次へ</a>
+    <% } %>
+  </div>
 </div>
 
 <script>
